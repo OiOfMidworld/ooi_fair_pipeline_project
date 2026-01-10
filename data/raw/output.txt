@@ -1,0 +1,114 @@
+Running Compliance Checker on the datasets from: ['deployment0020_CE02SHSM-RID27-03-CTDBPC000-telemetered-ctdbp_cdef_dcl_instrument_20251101T023003.923000-20251226T063106.137000.nc']
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/compliance_checker/suite.py:241: UserWarning: Deprecated standard_name modifiers found on variables ['sea_water_electrical_conductivity_qartod_results', 'sea_water_temperature_qartod_results', 'sea_water_pressure_qartod_executed', 'sea_water_temperature_qartod_executed', 'sea_water_practical_salinity_qartod_results', 'sea_water_pressure_qartod_results', 'sea_water_electrical_conductivity_qartod_executed', 'sea_water_practical_salinity_qartod_executed']
+  val = check_method(ds)
+
+
+--------------------------------------------------------------------------------
+                         IOOS Compliance Checker Report                         
+                                 Version 5.1.1                                  
+                     Report generated 2025-12-27T20:00:50Z                      
+                                     cf:1.8                                     
+http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html
+--------------------------------------------------------------------------------
+                               Corrective Actions                               
+deployment0020_CE02SHSM-RID27-03-CTDBPC000-telemetered-ctdbp_cdef_dcl_instrument_20251101T023003.923000-20251226T063106.137000.nc has 7 potential issues
+
+
+                                     Errors                                     
+--------------------------------------------------------------------------------
+§2.2 Data Types
+* The variable sea_water_pressure_qc_results failed because the datatype is uint8
+* The variable sea_water_electrical_conductivity_qartod_results failed because the datatype is uint8
+* The variable sea_water_pressure_qc_executed failed because the datatype is uint8
+* The variable sea_water_practical_salinity_qc_executed failed because the datatype is uint8
+* The variable sea_water_temperature_qartod_results failed because the datatype is uint8
+* The variable sea_water_electrical_conductivity_qc_executed failed because the datatype is uint8
+* The variable sea_water_density_qc_results failed because the datatype is uint8
+* The variable sea_water_temperature_qc_results failed because the datatype is uint8
+* The variable sea_water_density_qc_executed failed because the datatype is uint8
+* The variable sea_water_practical_salinity_qc_results failed because the datatype is uint8
+* The variable sea_water_practical_salinity_qartod_results failed because the datatype is uint8
+* The variable sea_water_electrical_conductivity_qc_results failed because the datatype is uint8
+* The variable sea_water_temperature_qc_executed failed because the datatype is uint8
+* The variable sea_water_pressure_qartod_results failed because the datatype is uint8
+
+§3.3 Standard Name
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_density_qc_results
+* Attribute long_name or/and standard_name is highly recommended for variable obs
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_temperature_qc_executed
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_pressure_qc_results
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_electrical_conductivity_qc_executed
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_temperature_qc_results
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_electrical_conductivity_qc_results
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_practical_salinity_qc_executed
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_density_qc_executed
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_practical_salinity_qc_results
+* Attribute long_name or/and standard_name is highly recommended for variable deployment
+* Attribute long_name or/and standard_name is highly recommended for variable sea_water_pressure_qc_executed
+
+§3.4 Ancillary Data
+* conductivity_qartod_results is not a variable in this dataset
+* conductivity_qartod_executed is not a variable in this dataset
+* pressure_qartod_results is not a variable in this dataset
+* pressure_qartod_executed is not a variable in this dataset
+* practical_salinity_qartod_results is not a variable in this dataset
+* practical_salinity_qartod_executed is not a variable in this dataset
+* temp_qartod_results is not a variable in this dataset
+* temp_qartod_executed is not a variable in this dataset
+
+§3.5 Flags
+* sea_water_pressure_qartod_executed does not define either flag_masks or flag_values
+* sea_water_pressure_qartod_executed's flag_meanings attribute is required for flag variables
+* sea_water_pressure_qartod_executed's flag_meanings attribute must be a string
+* sea_water_temperature_qartod_executed does not define either flag_masks or flag_values
+* sea_water_temperature_qartod_executed's flag_meanings attribute is required for flag variables
+* sea_water_temperature_qartod_executed's flag_meanings attribute must be a string
+* sea_water_electrical_conductivity_qartod_executed does not define either flag_masks or flag_values
+* sea_water_electrical_conductivity_qartod_executed's flag_meanings attribute is required for flag variables
+* sea_water_electrical_conductivity_qartod_executed's flag_meanings attribute must be a string
+* sea_water_practical_salinity_qartod_executed does not define either flag_masks or flag_values
+* sea_water_practical_salinity_qartod_executed's flag_meanings attribute is required for flag variables
+* sea_water_practical_salinity_qartod_executed's flag_meanings attribute must be a string
+
+§4.3 Vertical Coordinate
+* depth: vertical coordinates not defining pressure must include a positive attribute that is either 'up' or 'down'
+
+§5 Coordinate Systems
+* sea_water_pressure_qc_results's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_pressure_qc_results's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_pressure's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_pressure's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_pressure_qc_executed's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_pressure_qc_executed's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_practical_salinity_qc_executed's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_practical_salinity_qc_executed's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_electrical_conductivity_qc_executed's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_electrical_conductivity_qc_executed's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_density_qc_results's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_density_qc_results's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_temperature_qc_results's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_temperature_qc_results's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_practical_salinity's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_practical_salinity's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_density_qc_executed's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_density_qc_executed's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_practical_salinity_qc_results's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_practical_salinity_qc_results's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_temperature's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_temperature's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_electrical_conductivity_qc_results's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_electrical_conductivity_qc_results's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_temperature_qc_executed's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_temperature_qc_executed's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_density's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_density's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+* sea_water_electrical_conductivity's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+* sea_water_electrical_conductivity's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+
+
+                                    Warnings                                    
+--------------------------------------------------------------------------------
+§2.6 Attributes
+* §2.6.2 comment global attribute should be a non-empty string
+* §2.6.1 Conventions global attribute does not contain "CF-1.8"
+(venv) cyruswickersham@Cyruss-MacBook-Air raw % 
