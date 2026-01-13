@@ -8,10 +8,10 @@ Transform raw oceanographic data into FAIR-compliant, analysis-ready datasets.
 
 | Sprint | Status | Score Impact | Documentation |
 |--------|--------|--------------|---------------|
-| Sprint 0: Foundation | ✅ Complete | Baseline: 35/100 (F) | Setup & Discovery |
-| Sprint 1: Data Extraction | ✅ Complete | - | [Extraction Pipeline](docs/) |
-| Sprint 2: FAIR Assessment | ✅ Complete | Measured: 86.7/100 (B) | [SPRINT2_FAIR_ASSESSMENT.md](docs/SPRINT2_FAIR_ASSESSMENT.md) |
-| Sprint 3: Data Enrichment | ✅ Complete | **→ 93.0/100 (A)** | [SPRINT3_DATA_ENRICHMENT.md](docs/SPRINT3_DATA_ENRICHMENT.md) |
+| Sprint 0: Foundation | Complete | Baseline: 35/100 (F) | Setup & Discovery |
+| Sprint 1: Data Extraction | Complete | - | [Extraction Pipeline](docs/) |
+| Sprint 2: FAIR Assessment | Complete | Measured: 86.7/100 (B) | [SPRINT2_FAIR_ASSESSMENT.md](docs/SPRINT2_FAIR_ASSESSMENT.md) |
+| Sprint 3: Data Enrichment | Complete | **→ 93.0/100 (A)** | [SPRINT3_DATA_ENRICHMENT.md](docs/SPRINT3_DATA_ENRICHMENT.md) |
 | Sprint 4: Integration | 📋 Planned | TBD | Coming soon |
 
 ## What This Project Does
@@ -28,20 +28,20 @@ The OOI FAIR Pipeline is an end-to-end ETL (Extract, Transform, Load) system tha
 
 ## Key Features
 
-### 🎯 Data Extraction (Sprint 1)
+### Data Extraction (Sprint 1)
 - Automated M2M API authentication
 - THREDDS catalog parsing
 - Batch download with retry logic
 - Comprehensive error handling and logging
 
-### 📊 FAIR Assessment (Sprint 2)
+### FAIR Assessment (Sprint 2)
 - Evaluates datasets against FAIR principles (100-point scale)
 - CF conventions compliance checking
 - Detailed metric-by-metric scoring
 - Actionable improvement recommendations
 - JSON report generation
 
-### ⚡ Data Enrichment (Sprint 3)
+### Data Enrichment (Sprint 3)
 - **+6.3 point FAIR improvement** (B → A grade)
 - Adds missing coordinate variables (lat/lon/depth)
 - Enriches variable metadata (units, standard_name, long_name)
@@ -93,19 +93,19 @@ python3 examples/enrich_dataset.py data/raw/your_dataset.nc
 **Before Enrichment:**
 ```
 FAIR Score: 86.7/100 (Grade: B)
-  Findable:       25.0/25 ✅
-  Accessible:     20.0/20 ✅
-  Interoperable:  19.7/30 ⚠️
-  Reusable:       22.0/25 ⚠️
+  Findable:       25.0/25 
+  Accessible:     20.0/20 
+  Interoperable:  19.7/30 
+  Reusable:       22.0/25 
 ```
 
 **After Enrichment:**
 ```
 FAIR Score: 93.0/100 (Grade: A)
-  Findable:       25.0/25 ✅
-  Accessible:     20.0/20 ✅
-  Interoperable:  23.0/30 ✅
-  Reusable:       25.0/25 ✅
+  Findable:       25.0/25 
+  Accessible:     20.0/20 
+  Interoperable:  23.0/30 
+  Reusable:       25.0/25 
 
 Improvement: +6.3 points (B → A)
 Changes applied: 27
@@ -160,28 +160,28 @@ ooi_fair_pipeline_project/
 ## FAIR Principles Coverage
 
 ### F - Findable
-- ✅ Unique persistent identifiers
-- ✅ Rich descriptive metadata
-- ✅ Searchable attributes (geospatial, temporal)
-- ✅ Standard metadata conventions (CF, ACDD)
+- Unique persistent identifiers
+- Rich descriptive metadata
+- Searchable attributes (geospatial, temporal)
+- Standard metadata conventions (CF, ACDD)
 
 ### A - Accessible
-- ✅ Standard access protocols (HTTP/OPeNDAP)
-- ✅ Contact information
-- ✅ Usage license specified
-- ✅ Metadata retrievability
+- Standard access protocols (HTTP/OPeNDAP)
+- Contact information
+- Usage license specified
+- Metadata retrievability
 
 ### I - Interoperable
-- ✅ CF Conventions compliance
-- ✅ Standard vocabularies (CF standard names)
-- ✅ NetCDF format
-- ✅ Coordinate system definitions
+- CF Conventions compliance
+- Standard vocabularies (CF standard names)
+- NetCDF format
+- Coordinate system definitions
 
 ### R - Reusable
-- ✅ Clear usage license
-- ✅ Data provenance
-- ✅ Quality control documentation
-- ✅ Community standards (OOI, CF)
+- Clear usage license
+- Data provenance
+- Quality control documentation
+- Community standards (OOI, CF)
 
 ## Documentation
 
@@ -317,4 +317,4 @@ This is a research project. Contributions welcome via:
 
 **Project Goal:** Make ocean observing data more Findable, Accessible, Interoperable, and Reusable for the scientific community.
 
-**Status:** Sprint 3 Complete ✅ | 93/100 FAIR Score Achieved 🎯
+**Status:** Sprint 3 Complete | 93/100 FAIR Score Achieved
