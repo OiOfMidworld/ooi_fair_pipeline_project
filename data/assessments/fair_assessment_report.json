@@ -1,0 +1,204 @@
+{
+  "dataset": "data/raw/test_download.nc",
+  "timestamp": "1768310908.6540225",
+  "summary": {
+    "total_score": 86.71,
+    "grade": "B",
+    "findable": 25.0,
+    "accessible": 20.0,
+    "interoperable": 19.71,
+    "reusable": 22.0
+  },
+  "details": {
+    "findable": [
+      {
+        "name": "unique_identifier",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: id, uuid",
+        "issues": [
+          "doi",
+          "identifier"
+        ]
+      },
+      {
+        "name": "rich_metadata",
+        "points_earned": 10,
+        "points_possible": 10,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "All required attributes present",
+        "issues": []
+      },
+      {
+        "name": "searchable_metadata",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found 6/6 attributes",
+        "issues": []
+      },
+      {
+        "name": "metadata_standard",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: Conventions, Metadata_Conventions",
+        "issues": []
+      }
+    ],
+    "accessible": [
+      {
+        "name": "access_protocol",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: sourceUrl",
+        "issues": [
+          "datasetID"
+        ]
+      },
+      {
+        "name": "contact_info",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: creator_email, publisher_email",
+        "issues": [
+          "contact"
+        ]
+      },
+      {
+        "name": "access_constraints",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: license",
+        "issues": [
+          "accessConstraints"
+        ]
+      },
+      {
+        "name": "authentication_metadata",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: references",
+        "issues": [
+          "metadata_link"
+        ]
+      }
+    ],
+    "interoperable": [
+      {
+        "name": "cf_compliance",
+        "points_earned": 9.18,
+        "points_possible": 15,
+        "percentage": 61.2,
+        "status": "partial",
+        "details": "CF compliance: 61.2%",
+        "issues": [
+          "28 variables missing units",
+          "Less than 50% of variables have standard_name"
+        ]
+      },
+      {
+        "name": "standard_vocabulary",
+        "points_earned": 3.03,
+        "points_possible": 5,
+        "percentage": 60.6,
+        "status": "partial",
+        "details": "20/33 variables have standard attributes",
+        "issues": [
+          "sea_water_pressure_qc_results missing standard attributes",
+          "sea_water_pressure_qc_executed missing standard attributes",
+          "sea_water_practical_salinity_qc_executed missing standard attributes",
+          "id missing standard attributes",
+          "provenance missing standard attributes"
+        ]
+      },
+      {
+        "name": "data_format",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Standard NetCDF format (.nc)",
+        "issues": []
+      },
+      {
+        "name": "coordinate_system",
+        "points_earned": 2.5,
+        "points_possible": 5,
+        "percentage": 50.0,
+        "status": "partial",
+        "details": "Found 2/4 coordinates",
+        "issues": [
+          "Missing lat coordinate",
+          "Missing lon coordinate"
+        ]
+      }
+    ],
+    "reusable": [
+      {
+        "name": "clear_license",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "All required attributes present",
+        "issues": []
+      },
+      {
+        "name": "data_provenance",
+        "points_earned": 8,
+        "points_possible": 8,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found 4/5 attributes",
+        "issues": [
+          "creator_institution"
+        ]
+      },
+      {
+        "name": "quality_control",
+        "points_earned": 4,
+        "points_possible": 7,
+        "percentage": 57.1,
+        "status": "partial",
+        "details": "Found 18 QC variables",
+        "issues": [
+          "No QC methodology documentation"
+        ]
+      },
+      {
+        "name": "community_standards",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found 3/3 attributes",
+        "issues": []
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "critical",
+      "category": "Interoperability",
+      "items": [
+        "Achieve CF compliance",
+        "Use standard variable names",
+        "Define coordinate systems clearly"
+      ]
+    }
+  ]
+}
