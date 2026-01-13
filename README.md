@@ -11,8 +11,8 @@ Transform raw oceanographic data into FAIR-compliant, analysis-ready datasets.
 | Sprint 0: Foundation | Complete | Baseline: 35/100 (F) | Setup & Discovery |
 | Sprint 1: Data Extraction | Complete | - | [Extraction Pipeline](docs/) |
 | Sprint 2: FAIR Assessment | Complete | Measured: 86.7/100 (B) | [SPRINT2_FAIR_ASSESSMENT.md](docs/SPRINT2_FAIR_ASSESSMENT.md) |
-| Sprint 3: Data Enrichment | Complete | **→ 93.0/100 (A)** | [SPRINT3_DATA_ENRICHMENT.md](docs/SPRINT3_DATA_ENRICHMENT.md) |
-| Sprint 4: Integration | 📋 Planned | TBD | Coming soon |
+| Sprint 3: Data Enrichment | Complete | 93.0/100 (A)** | [SPRINT3_DATA_ENRICHMENT.md](docs/SPRINT3_DATA_ENRICHMENT.md) |
+| Sprint 4: Integration | Planned | | |
 
 ## What This Project Does
 
@@ -24,7 +24,7 @@ The OOI FAIR Pipeline is an end-to-end ETL (Extract, Transform, Load) system tha
 4. **Validates** CF conventions compliance
 5. **Reports** improvements and remaining gaps
 
-**Result:** Transforms raw OOI data from **Grade F → Grade A** on FAIR principles.
+**Result:** Transforms raw OOI data from **Grade F to Grade A** on FAIR principles.
 
 ## Key Features
 
