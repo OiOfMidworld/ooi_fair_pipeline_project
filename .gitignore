@@ -18,6 +18,9 @@ build/
 # Data files (don't commit large datasets)
 data/raw/*.nc
 data/enriched/*.nc
+data/bgc_argo/*.nc
+data/uploads/*.nc
+data/assessment_history.json
 *.hdf5
 
 # IDE

@@ -1,0 +1,248 @@
+{
+  "dataset": "data/bgc_argo/BD5904468_001.nc",
+  "timestamp": "1769608398.765188",
+  "summary": {
+    "total_score": 49.22,
+    "grade": "F",
+    "findable": 8.33,
+    "accessible": 5.0,
+    "interoperable": 22.36,
+    "reusable": 13.53
+  },
+  "details": {
+    "findable": [
+      {
+        "name": "unique_identifier",
+        "points_earned": 0,
+        "points_possible": 5,
+        "percentage": 0.0,
+        "status": "fail",
+        "details": "Missing: id, uuid, doi, identifier",
+        "issues": [
+          "id",
+          "uuid",
+          "doi",
+          "identifier"
+        ]
+      },
+      {
+        "name": "rich_metadata",
+        "points_earned": 3.33,
+        "points_possible": 10,
+        "percentage": 33.3,
+        "status": "partial",
+        "details": "Missing: summary, keywords, creator_name, project",
+        "issues": [
+          "summary",
+          "keywords",
+          "creator_name",
+          "project"
+        ]
+      },
+      {
+        "name": "searchable_metadata",
+        "points_earned": 0.0,
+        "points_possible": 5,
+        "percentage": 0.0,
+        "status": "fail",
+        "details": "Missing: geospatial_lat_min, geospatial_lat_max, geospatial_lon_min, geospatial_lon_max, time_coverage_start, time_coverage_end",
+        "issues": [
+          "geospatial_lat_min",
+          "geospatial_lat_max",
+          "geospatial_lon_min",
+          "geospatial_lon_max",
+          "time_coverage_start",
+          "time_coverage_end"
+        ]
+      },
+      {
+        "name": "metadata_standard",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: Conventions",
+        "issues": [
+          "Metadata_Conventions"
+        ]
+      }
+    ],
+    "accessible": [
+      {
+        "name": "access_protocol",
+        "points_earned": 0,
+        "points_possible": 5,
+        "percentage": 0.0,
+        "status": "fail",
+        "details": "Missing: sourceUrl, datasetID",
+        "issues": [
+          "sourceUrl",
+          "datasetID"
+        ]
+      },
+      {
+        "name": "contact_info",
+        "points_earned": 0,
+        "points_possible": 5,
+        "percentage": 0.0,
+        "status": "fail",
+        "details": "Missing: creator_email, publisher_email, contact",
+        "issues": [
+          "creator_email",
+          "publisher_email",
+          "contact"
+        ]
+      },
+      {
+        "name": "access_constraints",
+        "points_earned": 0,
+        "points_possible": 5,
+        "percentage": 0.0,
+        "status": "fail",
+        "details": "Missing: license, accessConstraints",
+        "issues": [
+          "license",
+          "accessConstraints"
+        ]
+      },
+      {
+        "name": "authentication_metadata",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found: references",
+        "issues": [
+          "metadata_link"
+        ]
+      }
+    ],
+    "interoperable": [
+      {
+        "name": "cf_compliance",
+        "points_earned": 8.61,
+        "points_possible": 15,
+        "percentage": 57.4,
+        "status": "partial",
+        "details": "CF compliance: 57.4%",
+        "issues": [
+          "83 variables missing units",
+          "Less than 50% of variables have standard_name"
+        ]
+      },
+      {
+        "name": "standard_vocabulary",
+        "points_earned": 5.0,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "117/117 variables have standard attributes",
+        "issues": []
+      },
+      {
+        "name": "data_format",
+        "points_earned": 5,
+        "points_possible": 5,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Standard NetCDF format (.nc)",
+        "issues": []
+      },
+      {
+        "name": "coordinate_system",
+        "points_earned": 3.75,
+        "points_possible": 5,
+        "percentage": 75.0,
+        "status": "partial",
+        "details": "Found 3/4 coordinates",
+        "issues": [
+          "Missing depth coordinate"
+        ]
+      }
+    ],
+    "reusable": [
+      {
+        "name": "clear_license",
+        "points_earned": 0.0,
+        "points_possible": 5,
+        "percentage": 0.0,
+        "status": "fail",
+        "details": "Missing: license",
+        "issues": [
+          "license"
+        ]
+      },
+      {
+        "name": "data_provenance",
+        "points_earned": 3.2,
+        "points_possible": 8,
+        "percentage": 40.0,
+        "status": "partial",
+        "details": "Missing: processing_level, creator_institution, date_created",
+        "issues": [
+          "processing_level",
+          "creator_institution",
+          "date_created"
+        ]
+      },
+      {
+        "name": "quality_control",
+        "points_earned": 7,
+        "points_possible": 7,
+        "percentage": 100.0,
+        "status": "pass",
+        "details": "Found 43 QC variables",
+        "issues": []
+      },
+      {
+        "name": "community_standards",
+        "points_earned": 3.33,
+        "points_possible": 5,
+        "percentage": 66.7,
+        "status": "partial",
+        "details": "Missing: cdm_data_type",
+        "issues": [
+          "cdm_data_type"
+        ]
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "critical",
+      "category": "Findability",
+      "items": [
+        "Add unique persistent identifier",
+        "Improve descriptive metadata",
+        "Add search-enabling metadata (geo bounds, time coverage)"
+      ]
+    },
+    {
+      "priority": "high",
+      "category": "Accessibility",
+      "items": [
+        "Add contact information",
+        "Specify data access constraints/license",
+        "Provide access protocol information"
+      ]
+    },
+    {
+      "priority": "critical",
+      "category": "Interoperability",
+      "items": [
+        "Achieve CF compliance",
+        "Use standard variable names",
+        "Define coordinate systems clearly"
+      ]
+    },
+    {
+      "priority": "high",
+      "category": "Reusability",
+      "items": [
+        "Add clear data license",
+        "Document data provenance",
+        "Include quality control information"
+      ]
+    }
+  ]
+}
