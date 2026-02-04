@@ -32,7 +32,6 @@ from transform.argo_enrichment_pipeline import ArgoEnrichmentPipeline
 
 st.set_page_config(
     page_title="MRV Readiness",
-    page_icon=":ocean:",
     layout="wide",
 )
 
@@ -107,7 +106,7 @@ def score_to_dict(score) -> dict:
 # Sidebar
 # ---------------------------------------------------------------------------
 
-st.sidebar.title(":ocean: MRV Readiness")
+st.sidebar.title("MRV Readiness")
 st.sidebar.markdown("Make oceanographic data verification-ready for marine carbon removal.")
 st.sidebar.divider()
 
@@ -130,7 +129,7 @@ Based on FAIR principles:
 # ---------------------------------------------------------------------------
 
 tab_upload, tab_dashboard, tab_about = st.tabs(
-    [":arrow_up: Assess & Enrich", ":bar_chart: History", ":books: About"]
+    ["Assess & Enrich", "History", "About"]
 )
 
 # ---------------------------------------------------------------------------
@@ -269,9 +268,9 @@ with tab_upload:
                         score_val = enr[f"{principle}_score"]
                         with st.expander(f"{principle.capitalize()} — {score_val:.1f} pts"):
                             for m in details:
-                                icon = {"pass": ":white_check_mark:",
-                                        "partial": ":warning:",
-                                        "fail": ":x:"}.get(m["status"], ":question:")
+                                icon = {"pass": "[PASS]",
+                                        "partial": "[PARTIAL]",
+                                        "fail": "[FAIL]"}.get(m["status"], "[?]")
                                 st.markdown(
                                     f"{icon} **{m['name']}** — "
                                     f"{m['points_earned']:.1f}/{m['points_possible']:.0f} "
@@ -286,7 +285,7 @@ with tab_upload:
                         enriched_bytes = f.read()
 
                     st.download_button(
-                        ":arrow_down: Download Enriched File",
+                        "Download Enriched File",
                         data=enriched_bytes,
                         file_name=f"{uploaded.name.rsplit('.', 1)[0]}_enriched.nc",
                         mime="application/x-netcdf",

@@ -419,11 +419,11 @@ pyessv        # Controlled vocabulary tools
 **This is a high-impact opportunity.** MRV is the critical bottleneck for scaling marine CDR, and your FAIR pipeline is well-positioned to address it.
 
 **Key Advantages:**
-- ✅ Proven technology (Sprints 1-3 complete)
-- ✅ Addresses $100M+ pain point (MRV costs)
-- ✅ Large potential market (30+ companies)
-- ✅ Strong scientific foundation
-- ✅ Regulatory alignment (FAIR = verification-ready)
+- Proven technology (Sprints 1-3 complete)
+- Addresses $100M+ pain point (MRV costs)
+- Large potential market (30+ companies)
+- Strong scientific foundation
+- Regulatory alignment (FAIR = verification-ready)
 
 **Recommendation:** Pivot the project toward mCDR-MRV as primary use case, starting with BGC-Argo data quality assessment.
 
