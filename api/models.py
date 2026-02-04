@@ -1,13 +1,16 @@
 """
-Pydantic response models for the FAIR Pipeline API.
+Pydantic response models for the MRV Pipeline API.
 
-Mirrors the existing FAIRScore / MetricScore dataclasses
-so they serialize cleanly to JSON.
+The MRV Readiness Score measures how well a dataset meets
+verification requirements for marine carbon dioxide removal (mCDR):
+- Is the data findable and citable? (Findable)
+- Can verifiers access it with clear terms? (Accessible)
+- Does it follow standard formats? (Interoperable)
+- Is provenance and quality documented? (Reusable)
 """
 
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
 
 
 class MetricScoreResponse(BaseModel):
@@ -20,7 +23,13 @@ class MetricScoreResponse(BaseModel):
     issues: List[str] = []
 
 
-class FAIRScoreResponse(BaseModel):
+class MRVScoreResponse(BaseModel):
+    """
+    MRV Readiness Score breakdown.
+
+    Measures standalone file quality for verification purposes.
+    Based on FAIR principles but focused on mCDR/MRV use cases.
+    """
     total_score: float
     grade: str
     findable_score: float
@@ -37,7 +46,7 @@ class AssessmentResult(BaseModel):
     filename: str
     timestamp: str
     dataset_type: str  # "ooi" or "argo"
-    score: FAIRScoreResponse
+    score: MRVScoreResponse
 
 
 class EnrichmentChange(BaseModel):
@@ -49,8 +58,8 @@ class EnrichmentChange(BaseModel):
 class AssessAndEnrichResult(BaseModel):
     filename: str
     dataset_type: str
-    original_score: FAIRScoreResponse
-    enriched_score: FAIRScoreResponse
+    original_score: MRVScoreResponse
+    enriched_score: MRVScoreResponse
     improvement: float
     enrichment_changes: List[EnrichmentChange] = []
     enriched_filename: str

@@ -1,65 +1,136 @@
 """
-FAIR Pipeline Dashboard
+MRV Readiness Dashboard
 
-Streamlit frontend for uploading, assessing, and enriching
-oceanographic NetCDF datasets.
+Streamlit app for assessing and enriching oceanographic NetCDF
+datasets for marine carbon removal verification.
 
 Start with:
     streamlit run dashboard/app.py
 """
 
+import sys
+from pathlib import Path
+import tempfile
+import json
+
 import streamlit as st
-import requests
 import pandas as pd
 import altair as alt
-import json
-from pathlib import Path
+import xarray as xr
 
-API_URL = "http://localhost:8000"
+# Add src to path for imports
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from assess.fair_assessor import FAIRAssessor
+from transform.enrichment_pipeline import FAIREnrichmentPipeline
+from transform.argo_enrichment_pipeline import ArgoEnrichmentPipeline
+
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
 
 st.set_page_config(
-    page_title="FAIR Pipeline",
+    page_title="MRV Readiness",
     page_icon=":ocean:",
     layout="wide",
 )
+
+HISTORY_FILE = PROJECT_ROOT / "data" / "dashboard_history.json"
+GRADE_COLORS = {"A": "#22c55e", "B": "#84cc16", "C": "#eab308", "D": "#f97316", "F": "#ef4444"}
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-GRADE_COLORS = {"A": "#22c55e", "B": "#84cc16", "C": "#eab308", "D": "#f97316", "F": "#ef4444"}
+def detect_dataset_type(ds: xr.Dataset) -> str:
+    """Detect if dataset is Argo or OOI format."""
+    if "JULD" in ds.variables or "N_PROF" in ds.dims:
+        return "argo"
+    return "ooi"
 
 
-def grade_color(grade: str) -> str:
-    return GRADE_COLORS.get(grade, "#6b7280")
+def load_history() -> list:
+    if HISTORY_FILE.exists():
+        return json.loads(HISTORY_FILE.read_text())
+    return []
 
 
-def api_available() -> bool:
-    try:
-        r = requests.get(f"{API_URL}/health", timeout=2)
-        return r.status_code == 200
-    except Exception:
-        return False
+def save_history(records: list):
+    HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+    HISTORY_FILE.write_text(json.dumps(records, indent=2))
+
+
+def append_history(record: dict):
+    records = load_history()
+    records.append(record)
+    save_history(records)
+
+
+def score_to_dict(score) -> dict:
+    """Convert FAIRScore object to serializable dict."""
+    return {
+        "total_score": round(score.total_score, 2),
+        "grade": score.grade,
+        "findable_score": round(score.findable_score, 2),
+        "accessible_score": round(score.accessible_score, 2),
+        "interoperable_score": round(score.interoperable_score, 2),
+        "reusable_score": round(score.reusable_score, 2),
+        "findable_details": [
+            {"name": m.name, "points_earned": m.points_earned,
+             "points_possible": m.points_possible, "percentage": m.percentage,
+             "status": m.status, "details": m.details, "issues": list(m.issues)}
+            for m in score.findable_details
+        ],
+        "accessible_details": [
+            {"name": m.name, "points_earned": m.points_earned,
+             "points_possible": m.points_possible, "percentage": m.percentage,
+             "status": m.status, "details": m.details, "issues": list(m.issues)}
+            for m in score.accessible_details
+        ],
+        "interoperable_details": [
+            {"name": m.name, "points_earned": m.points_earned,
+             "points_possible": m.points_possible, "percentage": m.percentage,
+             "status": m.status, "details": m.details, "issues": list(m.issues)}
+            for m in score.interoperable_details
+        ],
+        "reusable_details": [
+            {"name": m.name, "points_earned": m.points_earned,
+             "points_possible": m.points_possible, "percentage": m.percentage,
+             "status": m.status, "details": m.details, "issues": list(m.issues)}
+            for m in score.reusable_details
+        ],
+    }
 
 
 # ---------------------------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------------------------
 
-st.sidebar.title(":ocean: FAIR Pipeline")
-st.sidebar.markdown("Assess & enrich oceanographic data for FAIR compliance.")
+st.sidebar.title(":ocean: MRV Readiness")
+st.sidebar.markdown("Make oceanographic data verification-ready for marine carbon removal.")
 st.sidebar.divider()
 
-if api_available():
-    st.sidebar.success("API connected")
-else:
-    st.sidebar.error(
-        "API not running. Start it with:\n\n"
-        "```\nuvicorn api.main:app --reload --port 8000\n```"
-    )
+st.sidebar.markdown("""
+**What is the MRV Readiness Score?**
+
+It measures how well a NetCDF file works as a
+*standalone, self-documenting dataset* for
+carbon removal verification.
+
+Based on FAIR principles:
+- **F**indable — Can verifiers discover it?
+- **A**ccessible — Clear access terms?
+- **I**nteroperable — Standard formats?
+- **R**eusable — Quality documented?
+""")
+
+# ---------------------------------------------------------------------------
+# Tabs
+# ---------------------------------------------------------------------------
 
 tab_upload, tab_dashboard, tab_about = st.tabs(
-    [":arrow_up: Upload & Assess", ":bar_chart: Dashboard", ":books: About"]
+    [":arrow_up: Assess & Enrich", ":bar_chart: History", ":books: About"]
 )
 
 # ---------------------------------------------------------------------------
@@ -67,8 +138,11 @@ tab_upload, tab_dashboard, tab_about = st.tabs(
 # ---------------------------------------------------------------------------
 
 with tab_upload:
-    st.header("Upload & Assess a Dataset")
-    st.markdown("Upload a NetCDF file to get its FAIR score and an enriched version.")
+    st.header("Assess & Enrich a Dataset")
+    st.markdown(
+        "Upload a NetCDF file to get its **MRV Readiness Score** and download "
+        "an enriched version with improved metadata."
+    )
 
     uploaded = st.file_uploader(
         "Choose a NetCDF file",
@@ -78,34 +152,66 @@ with tab_upload:
 
     if uploaded is not None:
         if st.button("Assess & Enrich", type="primary", use_container_width=True):
-            if not api_available():
-                st.error("API is not running. Please start the API server first.")
-            else:
-                with st.spinner("Processing..."):
-                    files = {"file": (uploaded.name, uploaded.getvalue(), "application/x-netcdf")}
-                    resp = requests.post(f"{API_URL}/assess-and-enrich", files=files, timeout=120)
+            with st.spinner("Processing..."):
+                # Save uploaded file to temp location
+                with tempfile.NamedTemporaryFile(suffix=".nc", delete=False) as tmp:
+                    tmp.write(uploaded.getvalue())
+                    tmp_path = Path(tmp.name)
 
-                if resp.status_code != 200:
-                    st.error(f"Error: {resp.json().get('detail', resp.text)}")
-                else:
-                    data = resp.json()
-                    orig = data["original_score"]
-                    enr = data["enriched_score"]
+                try:
+                    # Detect type
+                    ds = xr.open_dataset(tmp_path)
+                    dataset_type = detect_dataset_type(ds)
+                    ds.close()
 
-                    # ----- Header metrics -----
+                    # Assess original
+                    assessor_orig = FAIRAssessor(str(tmp_path))
+                    original_score = assessor_orig.assess()
+
+                    # Enrich
+                    enriched_path = tmp_path.parent / f"{tmp_path.stem}_enriched.nc"
+                    if dataset_type == "argo":
+                        pipeline = ArgoEnrichmentPipeline(str(tmp_path), str(enriched_path))
+                    else:
+                        pipeline = FAIREnrichmentPipeline(str(tmp_path), str(enriched_path))
+
+                    pipeline.run()
+                    pipeline.save()
+                    summary = pipeline.get_enrichment_summary()
+
+                    # Assess enriched
+                    assessor_enr = FAIRAssessor(str(enriched_path))
+                    enriched_score = assessor_enr.assess()
+
+                    orig = score_to_dict(original_score)
+                    enr = score_to_dict(enriched_score)
+                    improvement = round(enriched_score.total_score - original_score.total_score, 2)
+
+                    # Save to history
+                    from datetime import datetime, timezone
+                    append_history({
+                        "filename": uploaded.name,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                        "dataset_type": dataset_type,
+                        "original_score": orig,
+                        "enriched_score": enr,
+                        "improvement": improvement,
+                    })
+
+                    # ----- Results -----
                     st.divider()
                     st.subheader("Results")
 
                     col1, col2, col3, col4 = st.columns(4)
-                    col1.metric("Original Score", f"{orig['total_score']:.1f}/100", None)
+                    col1.metric("Original Score", f"{orig['total_score']:.1f}/100")
                     col2.metric("Enriched Score", f"{enr['total_score']:.1f}/100",
-                                f"+{data['improvement']:.1f}")
-                    col3.metric("Grade", f"{orig['grade']} -> {enr['grade']}")
-                    col4.metric("Dataset Type", data["dataset_type"].upper())
+                                f"+{improvement:.1f}")
+                    col3.metric("Grade", f"{orig['grade']} → {enr['grade']}")
+                    col4.metric("Dataset Type", dataset_type.upper())
 
-                    # ----- Before / After bar chart -----
+                    # ----- Bar chart -----
                     st.divider()
-                    st.subheader("FAIR Principle Breakdown")
+                    st.subheader("MRV Readiness Breakdown")
 
                     principles = ["Findable", "Accessible", "Interoperable", "Reusable"]
                     max_pts = [25, 20, 30, 25]
@@ -127,7 +233,7 @@ with tab_upload:
                         .mark_bar()
                         .encode(
                             x=alt.X("Principle:N", sort=principles,
-                                     axis=alt.Axis(labelAngle=0)),
+                                    axis=alt.Axis(labelAngle=0)),
                             y=alt.Y("Score:Q", title="Points"),
                             color=alt.Color("Version:N",
                                             scale=alt.Scale(
@@ -141,25 +247,27 @@ with tab_upload:
                     )
                     st.altair_chart(bar, use_container_width=True)
 
-                    # ----- Enrichment changes -----
-                    if data.get("enrichment_changes"):
+                    # ----- Changes -----
+                    changes = summary.get("enrichers", {})
+                    if changes:
                         st.divider()
                         st.subheader("Enrichment Changes")
-                        for ch in data["enrichment_changes"]:
+                        total_changes = sum(c.get("changes_made", 0) for c in changes.values())
+                        st.markdown(f"**{total_changes} metadata enhancements applied**")
+                        for name, info in changes.items():
                             st.markdown(
-                                f"**{ch['enricher']}** — "
-                                f"{ch['changes_made']} changes, "
-                                f"{ch['issues_found']} issues"
+                                f"- **{name}**: {info['changes_made']} changes, "
+                                f"{info['issues_found']} issues"
                             )
 
-                    # ----- Metric details (expandable) -----
+                    # ----- Metric details -----
                     st.divider()
                     st.subheader("Metric Details (Enriched)")
 
                     for principle in ["findable", "accessible", "interoperable", "reusable"]:
                         details = enr[f"{principle}_details"]
-                        with st.expander(f"{principle.capitalize()} — "
-                                         f"{enr[f'{principle}_score']:.1f} pts"):
+                        score_val = enr[f"{principle}_score"]
+                        with st.expander(f"{principle.capitalize()} — {score_val:.1f} pts"):
                             for m in details:
                                 icon = {"pass": ":white_check_mark:",
                                         "partial": ":warning:",
@@ -172,129 +280,152 @@ with tab_upload:
                                 if m["details"]:
                                     st.caption(m["details"])
 
-                    # ----- Download enriched file -----
+                    # ----- Download -----
                     st.divider()
-                    enriched_name = data["enriched_filename"]
-                    dl_resp = requests.get(f"{API_URL}/download/{enriched_name}", timeout=30)
-                    if dl_resp.status_code == 200:
-                        st.download_button(
-                            ":arrow_down: Download Enriched File",
-                            data=dl_resp.content,
-                            file_name=enriched_name,
-                            mime="application/x-netcdf",
-                            use_container_width=True,
-                        )
+                    with open(enriched_path, "rb") as f:
+                        enriched_bytes = f.read()
+
+                    st.download_button(
+                        ":arrow_down: Download Enriched File",
+                        data=enriched_bytes,
+                        file_name=f"{uploaded.name.rsplit('.', 1)[0]}_enriched.nc",
+                        mime="application/x-netcdf",
+                        use_container_width=True,
+                    )
+
+                except Exception as e:
+                    st.error(f"Error processing file: {e}")
 
 # ---------------------------------------------------------------------------
 # Tab 2 – Dashboard
 # ---------------------------------------------------------------------------
 
 with tab_dashboard:
-    st.header("Assessment Dashboard")
+    st.header("Assessment History")
 
-    if not api_available():
-        st.info("Start the API to view assessment history.")
+    records = load_history()
+
+    if not records:
+        st.info("No assessments yet. Upload a file in the Assess tab to get started.")
     else:
-        resp = requests.get(f"{API_URL}/history", timeout=10)
-        if resp.status_code != 200:
-            st.error("Failed to load history.")
-        else:
-            hist = resp.json()
+        # Summary metrics
+        orig_scores = [r.get("original_score", r.get("score", {})).get("total_score", 0) for r in records]
+        enr_scores = [r.get("enriched_score", {}).get("total_score") for r in records if r.get("enriched_score")]
 
-            if hist["total_processed"] == 0:
-                st.info("No assessments yet. Upload a file in the Upload tab to get started.")
-            else:
-                # Summary metrics
-                col1, col2, col3 = st.columns(3)
-                col1.metric("Files Processed", hist["total_processed"])
-                if hist["average_original_score"] is not None:
-                    col2.metric("Avg Original Score",
-                                f"{hist['average_original_score']:.1f}")
-                if hist["average_enriched_score"] is not None:
-                    col3.metric("Avg Enriched Score",
-                                f"{hist['average_enriched_score']:.1f}")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Files Processed", len(records))
+        if orig_scores:
+            col2.metric("Avg Original Score", f"{sum(orig_scores) / len(orig_scores):.1f}")
+        if enr_scores:
+            col3.metric("Avg Enriched Score", f"{sum(enr_scores) / len(enr_scores):.1f}")
 
-                st.divider()
+        st.divider()
 
-                # Table of assessments
-                rows = []
-                for a in hist["assessments"]:
-                    rows.append({
-                        "File": a["filename"],
-                        "Type": a["dataset_type"].upper(),
-                        "Score": a["score"]["total_score"],
-                        "Grade": a["score"]["grade"],
-                        "F": a["score"]["findable_score"],
-                        "A": a["score"]["accessible_score"],
-                        "I": a["score"]["interoperable_score"],
-                        "R": a["score"]["reusable_score"],
-                        "Timestamp": a["timestamp"][:19],
-                    })
+        # Table
+        rows = []
+        for r in records:
+            score_data = r.get("enriched_score", r.get("score", {}))
+            rows.append({
+                "File": r.get("filename", "unknown"),
+                "Type": r.get("dataset_type", "?").upper(),
+                "Score": score_data.get("total_score", 0),
+                "Grade": score_data.get("grade", "?"),
+                "F": score_data.get("findable_score", 0),
+                "A": score_data.get("accessible_score", 0),
+                "I": score_data.get("interoperable_score", 0),
+                "R": score_data.get("reusable_score", 0),
+                "Improvement": r.get("improvement", "—"),
+                "Time": r.get("timestamp", "")[:19],
+            })
 
-                df = pd.DataFrame(rows)
-                st.dataframe(df, use_container_width=True, hide_index=True)
+        df = pd.DataFrame(rows)
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
-                # Score distribution chart
-                if len(df) > 1:
-                    st.divider()
-                    st.subheader("Score Distribution")
+        # Chart
+        if len(df) > 1:
+            st.divider()
+            st.subheader("Score Distribution")
 
-                    score_chart = (
-                        alt.Chart(df)
-                        .mark_bar()
-                        .encode(
-                            x=alt.X("File:N", axis=alt.Axis(labelAngle=-45)),
-                            y=alt.Y("Score:Q", scale=alt.Scale(domain=[0, 100])),
-                            color=alt.Color("Grade:N",
-                                            scale=alt.Scale(
-                                                domain=list(GRADE_COLORS.keys()),
-                                                range=list(GRADE_COLORS.values()),
-                                            )),
-                            tooltip=["File", "Type", "Score", "Grade"],
-                        )
-                        .properties(height=300)
-                    )
-                    st.altair_chart(score_chart, use_container_width=True)
+            score_chart = (
+                alt.Chart(df)
+                .mark_bar()
+                .encode(
+                    x=alt.X("File:N", axis=alt.Axis(labelAngle=-45)),
+                    y=alt.Y("Score:Q", scale=alt.Scale(domain=[0, 100])),
+                    color=alt.Color("Grade:N",
+                                    scale=alt.Scale(
+                                        domain=list(GRADE_COLORS.keys()),
+                                        range=list(GRADE_COLORS.values()),
+                                    )),
+                    tooltip=["File", "Type", "Score", "Grade", "Improvement"],
+                )
+                .properties(height=300)
+            )
+            st.altair_chart(score_chart, use_container_width=True)
+
+        # Clear history
+        st.divider()
+        if st.button("Clear History", type="secondary"):
+            save_history([])
+            st.rerun()
 
 # ---------------------------------------------------------------------------
 # Tab 3 – About
 # ---------------------------------------------------------------------------
 
 with tab_about:
-    st.header("About the FAIR Pipeline")
+    st.header("About MRV Readiness")
 
     st.markdown("""
-    ### What is FAIR?
+    ### What is this tool?
 
-    The **FAIR Principles** ensure scientific data is:
+    This tool assesses and enriches oceanographic data to make it
+    **verification-ready for marine carbon dioxide removal (mCDR)** projects.
 
-    | Principle | Description | Points |
-    |-----------|-------------|--------|
-    | **F**indable | Rich metadata, unique identifiers, searchable | 25 |
-    | **A**ccessible | Open protocols, contact info, license | 20 |
-    | **I**nteroperable | CF conventions, standard names, NetCDF | 30 |
-    | **R**eusable | License, provenance, QC documentation | 25 |
+    ### The Problem
+
+    Raw oceanographic data (from Argo floats, OOI moorings, etc.) is designed
+    for operational use by scientists. It often lacks the metadata needed for:
+
+    - **Carbon credit verification** — Verifiers need self-contained, well-documented files
+    - **Regulatory compliance** — EPA, London Protocol, and other frameworks require traceable data
+    - **Long-term archival** — Data must be understandable decades from now
+
+    ### The Solution
+
+    This pipeline:
+
+    1. **Assesses** your data against verification requirements
+    2. **Enriches** it with missing metadata (identifiers, licenses, provenance, etc.)
+    3. **Outputs** a standardized file ready for MRV workflows
+
+    ### The MRV Readiness Score
+
+    The score measures how well a dataset works as a **standalone, self-documenting file**
+    for verification purposes. It's based on FAIR principles:
+
+    | Principle | What it measures | Points |
+    |-----------|------------------|--------|
+    | **Findable** | Identifiers, descriptive metadata, discoverability | 25 |
+    | **Accessible** | License, contact info, access protocols | 20 |
+    | **Interoperable** | CF conventions, standard formats, coordinate systems | 30 |
+    | **Reusable** | Provenance, quality documentation, community standards | 25 |
+
+    **Important:** This score measures *file quality for verification*, not adherence
+    to the source program's standards. Argo and OOI data are excellent for their
+    intended purposes — this tool makes them work for verification too.
 
     ### Supported Datasets
 
-    - **OOI** — Ocean Observatories Initiative (CE02SHSM array)
     - **BGC-Argo** — Biogeochemical Argo floats (pH, O2, nitrate, chlorophyll)
+    - **OOI** — Ocean Observatories Initiative (CTD, dissolved oxygen, etc.)
 
-    ### mCDR / MRV Application
+    ### Use Cases
 
-    This pipeline is designed to make oceanographic data **verification-ready**
-    for marine Carbon Dioxide Removal (mCDR) projects, including:
-
-    - **Ocean Alkalinity Enhancement (OAE)** monitoring
-    - **Measurement, Reporting, Verification (MRV)** compliance
-    - Carbon credit verification using BGC-Argo float data
-
-    ### How It Works
-
-    1. **Upload** a NetCDF file (OOI or BGC-Argo)
-    2. **Assess** — the pipeline scores the file against FAIR principles
-    3. **Enrich** — missing metadata is automatically added
-    4. **Download** the enriched, verification-ready dataset
+    - **Ocean Alkalinity Enhancement (OAE)** — Use BGC-Argo pH data for baseline monitoring
+    - **MRV for carbon credits** — Prepare data for third-party verification
+    - **Regulatory submissions** — Create compliant data packages
+    - **Research data management** — Improve discoverability and citation
 
     ### Links
 

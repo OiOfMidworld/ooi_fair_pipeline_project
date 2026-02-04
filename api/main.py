@@ -1,8 +1,11 @@
 """
-FAIR Pipeline REST API
+MRV Readiness Pipeline API
 
-Lightweight FastAPI service exposing the OOI / BGC-Argo
-assessment and enrichment pipeline.
+Assess and enrich oceanographic NetCDF datasets for
+marine carbon removal verification (mCDR/MRV).
+
+The MRV Readiness Score measures how well a dataset works
+as a standalone, self-documenting file for verification purposes.
 
 Start with:
     uvicorn api.main:app --reload --port 8000
@@ -29,7 +32,7 @@ from transform.enrichment_pipeline import FAIREnrichmentPipeline
 from transform.argo_enrichment_pipeline import ArgoEnrichmentPipeline
 
 from api.models import (
-    FAIRScoreResponse,
+    MRVScoreResponse,
     MetricScoreResponse,
     AssessmentResult,
     AssessAndEnrichResult,
@@ -51,8 +54,8 @@ ENRICHED_DIR.mkdir(parents=True, exist_ok=True)
 # App
 # ---------------------------------------------------------------------------
 app = FastAPI(
-    title="FAIR Pipeline API",
-    description="Assess and enrich oceanographic NetCDF datasets for FAIR compliance",
+    title="MRV Readiness API",
+    description="Assess and enrich oceanographic NetCDF datasets for marine carbon removal verification",
     version="0.1.0",
 )
 
@@ -83,7 +86,7 @@ def _detect_dataset_type(path: Path) -> str:
     return "argo" if is_argo else "ooi"
 
 
-def _fair_score_to_response(score) -> FAIRScoreResponse:
+def _score_to_response(score) -> MRVScoreResponse:
     """Convert internal FAIRScore dataclass → Pydantic model."""
 
     def _metric_list(details) -> List[MetricScoreResponse]:
@@ -100,7 +103,7 @@ def _fair_score_to_response(score) -> FAIRScoreResponse:
             for m in details
         ]
 
-    return FAIRScoreResponse(
+    return MRVScoreResponse(
         total_score=round(score.total_score, 2),
         grade=score.grade,
         findable_score=round(score.findable_score, 2),
@@ -141,13 +144,13 @@ def health():
 
 @app.post("/assess", response_model=AssessmentResult)
 def assess(file: UploadFile = File(...)):
-    """Upload a NetCDF file and get its FAIR score."""
+    """Upload a NetCDF file and get its MRV Readiness score."""
     path = _save_upload(file)
     try:
         dataset_type = _detect_dataset_type(path)
         assessor = FAIRAssessor(str(path))
         score = assessor.assess()
-        score_resp = _fair_score_to_response(score)
+        score_resp = _score_to_response(score)
 
         result = AssessmentResult(
             filename=file.filename,
@@ -215,8 +218,8 @@ def assess_and_enrich(file: UploadFile = File(...)):
         assessor_enr = FAIRAssessor(str(enriched_path))
         enriched_score = assessor_enr.assess()
 
-        orig_resp = _fair_score_to_response(original_score)
-        enr_resp = _fair_score_to_response(enriched_score)
+        orig_resp = _score_to_response(original_score)
+        enr_resp = _score_to_response(enriched_score)
 
         changes = [
             EnrichmentChange(
@@ -271,7 +274,7 @@ def history():
                 filename=r["filename"],
                 timestamp=r["timestamp"],
                 dataset_type=r["dataset_type"],
-                score=FAIRScoreResponse(**r["enriched_score"]),
+                score=MRVScoreResponse(**r["enriched_score"]),
             ))
         elif "score" in r:
             orig_scores.append(r["score"]["total_score"])
@@ -279,7 +282,7 @@ def history():
                 filename=r["filename"],
                 timestamp=r["timestamp"],
                 dataset_type=r["dataset_type"],
-                score=FAIRScoreResponse(**r["score"]),
+                score=MRVScoreResponse(**r["score"]),
             ))
 
     return HistoryResponse(

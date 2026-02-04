@@ -1,0 +1,14 @@
+# Minimal requirements for Streamlit Cloud deployment
+# Use this file when deploying to Streamlit Cloud
+
+streamlit>=1.30.0
+pandas>=2.0.0
+altair>=5.0.0
+xarray>=2024.1.0
+netCDF4>=1.6.0
+numpy>=1.24.0
+requests>=2.28.0
+python-dotenv>=1.0.0
+
+# Optional: for CF compliance checking (adds ~50 dependencies)
+# compliance-checker>=5.1.0
