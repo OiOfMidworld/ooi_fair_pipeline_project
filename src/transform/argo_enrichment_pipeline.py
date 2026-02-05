@@ -22,6 +22,7 @@ from transform.argo_metadata_enricher import ArgoMetadataEnricher
 from transform.geospatial_extractor import GeospatialExtractor
 from transform.bgc_standard_name_mapper import BGCStandardNameMapper
 from transform.metadata_enricher import MetadataEnricher  # Reuse existing
+from transform.anomaly_enricher import AnomalyEnricher
 
 logger = get_logger(__name__)
 
@@ -95,7 +96,7 @@ class ArgoEnrichmentPipeline:
 
         # Determine which enrichers to run
         if enrichers is None:
-            enrichers = ['geospatial', 'argo_metadata', 'bgc_names', 'metadata']
+            enrichers = ['geospatial', 'argo_metadata', 'anomaly', 'bgc_names', 'metadata']
 
         # Run enrichers in order
         enricher_map = {
@@ -104,6 +105,7 @@ class ArgoEnrichmentPipeline:
                 self.dataset,
                 file_path=str(self.input_path)
             ),
+            'anomaly': lambda: AnomalyEnricher(self.dataset),
             'bgc_names': lambda: BGCStandardNameMapper(self.dataset),
             'metadata': lambda: MetadataEnricher(self.dataset),
         }
